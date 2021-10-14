@@ -1,7 +1,9 @@
+import data from '../data/setup.json'
+
 const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
 
-const grid = Array(300).fill().map(() => Array(300).fill(false))
+const grid = Array(200).fill().map(() => Array(200).fill(false))
 let center
 let cellSize
 
@@ -14,7 +16,17 @@ function resize() {
 resize()
 window.addEventListener('resize', resize)
 
-for (const row of grid) for (let i = 0; i < row.length; i++) row[i] = Math.random() > .8
+function setup() {
+  for (const [[x0, y0], name] of data.place) {
+    for (let y = 0; y < data.blocks[name].length; y++) {
+      for (let x = 0; x < data.blocks[name][y].length; x++) {
+        if (data.blocks[name][y][x] !== ' ')
+          grid[y0 + y][x0 + x] = true
+      }
+    }
+  }
+}
+setup()
 
 function render() {
   const x0 = canvas.width / 2 - center[0] * cellSize 
@@ -64,4 +76,4 @@ function step() {
 }
 
 render()
-setTimeout(step, interval)
+setTimeout(step, 2000)
